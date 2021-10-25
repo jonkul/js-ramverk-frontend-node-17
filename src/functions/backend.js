@@ -1,8 +1,17 @@
 //GET DATABASE DOCS
-const fetchData = () => {
+async function fetchData() {
+    return fetch("https://jsramverk-editor-joku17.azurewebsites.net/list")
+    .then(res => {
+        return res.json()
+    })
+};
+
+
+//GET DATABASE DOCS
+/* const fetchData = () => {
     return fetch("https://jsramverk-editor-joku17.azurewebsites.net/list")
         .then(response => response.json());
-};
+}; */
 
 
 //RESET DATABASE
@@ -53,3 +62,39 @@ function update(activeId, activeName, activeHTML) {
 
 
 export { update, createNew, setupDB, fetchData };
+
+
+/* import React, { useState, useEffect } from "react";
+
+const useUserData = () => {
+    const initialState = {
+        data: {},
+        error: null
+    }
+    const [state, setState] = useState(initialState);
+
+    useEffect(() => {
+        // clean up controller
+        let isSubscribed = true;
+
+        // Try to communicate with sever API
+        fetch("https://jsramverk-editor-joku17.azurewebsites.net/list")
+        .then(response => response.json())
+        .then(data => isSubscribed ? setState(prevState => ({
+            ...prevState, data: data
+        })) : null)
+        .catch(error => {
+            if (isSubscribed) {
+            setState(prevState => ({
+                ...prevState,
+                error
+            }));
+            }
+        })
+
+        // cancel subscription to useEffect
+        return () => (isSubscribed = false)
+    }, []);
+
+    return state
+} */

@@ -9,6 +9,7 @@ import {
 } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
 
+jest.setTimeout(50000);
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -29,28 +30,30 @@ describe('App', () => {
 
         expect(screen.queryByText('New document')).toBeNull();
 
-        //sleep(3000);
+        sleep(3000);
     });
 
 
 
-    test('clicks New button', async () => {
+    test('clicks New button', () => {
         const {rerender} = render(<App />);
 
-        var mhm = await screen.findByText('New');
+        var mhm = screen.getByText('New');
 
-        await act(async () => {
+        act( () => {
             userEvent.click(mhm);
         });
         
-        rerender(<App />)
+        rerender(<App />);
 
-        await (waitFor(() => expect(screen.getByText('New document')).toBeInTheDocument(),{timeout:3000}));
+        (waitFor(() => expect(screen.getByText('New document')).toBeInTheDocument(),{timeout:30000}));
+
+        sleep(3000);
     });
 
 
 
-    test('renders App component, finds expected static elements', async () => {
+    test('renders App component, finds expected static elements', () => {
         render(<App />);
 
         expect(screen.getByText('My little React/Trix text editor')).toBeInTheDocument();
@@ -63,50 +66,44 @@ describe('App', () => {
 
 
 
-    test('edits the "text editor", finds state driven <p> in DOM', async () => {
+    test('edits the "text editor", finds state driven <p> in DOM', () => {
         render(<App />);
 
         expect(screen.queryByText('test input2')).toBeNull();
 
-        await act(async () => {
+        act( () => {
             fireEvent.change(screen.getByRole('textbox'), {
                 target: { value: 'test input2' },
             });
         });
 
-        expect(await screen.findByText('test input2')).toBeInTheDocument();
         sleep(3000);
+        //expect(screen.findByText('test input2')).toBeInTheDocument();
+        (waitFor(() => expect(screen.getByText('test input2')).toBeInTheDocument(),{timeout:30000}));
+        
     });
 
 
 
-    test('edits "active document input", finds state driven <p> in DOM', async () => {
+    test('edits "active document input", finds state driven <p> in DOM', () => {
         render(<App />);
 
         expect(screen.queryByText('test input')).toBeNull();
 
-        await act(async () => {
+        act( () => {
             fireEvent.change(screen.getByRole('textbox'), {
                 target: { value: 'test input' },
             });
         });
 
-        expect(await screen.findByText('test input')).toBeInTheDocument();
+        (waitFor(() => expect(screen.getByText('test input')).toBeInTheDocument(),{timeout:30000}));
+        //expect(await screen.findByText('test input')).toBeInTheDocument();
         sleep(3000);
     });
 
 
 
-    /* test('finds "New document"', async () => {
-        render(<App />);
-
-        expect(await screen.findByText('New document')).toBeInTheDocument();
-        //screen.debug();
-        sleep(3000);
-    }); */
-
-
-    test('clicks Reset DB button', () => {
+    test('clicks Reset DB button, doesnt find "New document"', () => {
         render(<App />);
 
         expect(screen.queryByText('test input3')).toBeNull();
@@ -123,10 +120,29 @@ describe('App', () => {
 
 
 
-    /* test('renders App component, finds expected DB elements', async () => {
-        render(<App />);
+    test('renders App component, finds expected DB elements', () => {
+        const {rerender} = render(<App />);
+
+        (waitFor(() => expect(screen.getByText('Dokument1')).toBeInTheDocument(),{timeout:30000}));
 
         sleep(3000);
-        expect(await screen.findByText('Dokument1')).toBeInTheDocument();
-    }); */
+    });
+
+
+
+    test('clicks New button', () => {
+        const {rerender} = render(<App />);
+
+        var mhm = screen.getByText('New');
+
+        act( () => {
+            userEvent.click(mhm);
+        });
+        
+        waitFor(() => rerender(<App />),{timeout:30000});
+
+        /* await (waitFor(() => expect(screen.getByText('New document')).toBeInTheDocument(),{timeout:30000})); */
+
+        sleep(3000);
+    });
 });
