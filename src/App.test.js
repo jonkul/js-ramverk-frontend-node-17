@@ -71,7 +71,7 @@ describe('App', () => {
         expect(screen.queryByText('test input2')).toBeNull();
 
         act( () => {
-            fireEvent.change(screen.getByRole('textbox'), {
+            fireEvent.change(screen.getByPlaceholderText(/Input your text/i), {
                 target: { value: 'test input2' },
             });
         });
@@ -90,7 +90,7 @@ describe('App', () => {
         expect(screen.queryByText('test input')).toBeNull();
 
         act( () => {
-            fireEvent.change(screen.getByRole('textbox'), {
+            fireEvent.change(screen.getByPlaceholderText(/create new doc/i), {
                 target: { value: 'test input' },
             });
         });

@@ -7,6 +7,8 @@ import MyInput from './components/myinput';
 import NewButton from './components/newbutton';
 import ResetButton from './components/resetbutton';
 import { useState, useEffect } from "react";
+// eslint-disable-next-line
+import Trix from "trix";
 import { ReactTrixRTEInput } from "react-trix-rte";
 import { update, createNew, setupDB, fetchData } from './functions/backend';
 //import useSWR from 'swr';
@@ -68,7 +70,7 @@ export default function App(props) {
     function resetButtonClicked() {
         setupDB();
         fetchedData();
-        //window.location.reload(false);
+        window.location.reload(false);
     }
 
     //handle new button clicked
@@ -76,10 +78,10 @@ export default function App(props) {
         createNew();
         fetchedData();
 
-        /* var element = document.querySelector("trix-editor");
+        var element = document.querySelector("trix-editor");
         element.editor.setSelectedRange([0, 999999999999999]);
         element.editor.deleteInDirection("forward");
-        element.editor.insertHTML("New document created, select it in the list above!"); */
+        element.editor.insertHTML("New document created, select it in the list above!");
     }
 
 
@@ -107,10 +109,12 @@ export default function App(props) {
                                 onClick={resetButtonClicked}
                                 className={"reset"}
                             />
-                            <MyInput
-                                key="texta"
+                            <MyInput                                
+                                id="active"
+                                className="active"
+                                name="active"
                                 value={activeName}
-                                onChange={inpChange}
+                                onChange={inpChange}                                
                             >
                             </MyInput>
                         </div>
