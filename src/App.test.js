@@ -34,6 +34,7 @@ describe('App', () => {
         expect(screen.getByText('My little React/Trix text editor')).toBeInTheDocument();
         expect(screen.getByText('Active document:')).toBeInTheDocument();
         expect(screen.getByText('Documents:')).toBeInTheDocument();
+        sleep(3000);
         expect(await screen.findByText('Dokument1')).toBeInTheDocument();
     });
 
