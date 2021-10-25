@@ -18,7 +18,7 @@ function sleep(ms) {
 
 
 describe('App', () => {
-    test('clicks Reset DB button', () => {
+    test('clicks Reset DB button, doesnt find "New document"', () => {
         render(<App />);
 
         expect(screen.queryByText('test input3')).toBeNull();
@@ -35,7 +35,7 @@ describe('App', () => {
 
 
 
-    test('clicks New button', () => {
+    test('clicks New button, finds "New document"', () => {
         const {rerender} = render(<App />);
 
         var mhm = screen.getByText('New');
@@ -61,7 +61,6 @@ describe('App', () => {
         expect(screen.getByText('Documents:')).toBeInTheDocument();
         
         sleep(3000);
-        //expect(await screen.findByText('Dokument1')).toBeInTheDocument();
     });
 
 
@@ -78,8 +77,8 @@ describe('App', () => {
         });
 
         sleep(3000);
-        //expect(screen.findByText('test input2')).toBeInTheDocument();
-        (waitFor(() => expect(screen.getByText('test input2')).toBeInTheDocument(),{timeout:30000}));
+        waitFor(() => expect(screen.getByText('test input2')).toBeInTheDocument(),{timeout:30000});
+        sleep(3000);
         
     });
 
@@ -96,8 +95,7 @@ describe('App', () => {
             });
         });
 
-        (waitFor(() => expect(screen.getByText('test input')).toBeInTheDocument(),{timeout:30000}));
-        //expect(await screen.findByText('test input')).toBeInTheDocument();
+        waitFor(() => expect(screen.getByText('test input')).toBeInTheDocument(),{timeout:30000});
         sleep(3000);
     });
 
