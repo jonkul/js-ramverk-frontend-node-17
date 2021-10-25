@@ -35,7 +35,7 @@ describe('App', () => {
         expect(screen.getByText('Active document:')).toBeInTheDocument();
         expect(screen.getByText('Documents:')).toBeInTheDocument();
         sleep(3000);
-        expect(await screen.findByText('Dokument1')).toBeInTheDocument();
+        //expect(await screen.findByText('Dokument1')).toBeInTheDocument();
     });
 
 
@@ -43,6 +43,7 @@ describe('App', () => {
     test('renders App component, finds expected DB elements', async () => {
         render(<App />);
 
+        sleep(3000);
         expect(await screen.findByText('Dokument1')).toBeInTheDocument();
     });
 
