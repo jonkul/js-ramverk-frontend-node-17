@@ -445,3 +445,45 @@ import userEvent from '@testing-library/user-event'; */
             console.error("Error fetching data: ", error);
             throw error;
         }); */
+
+
+
+
+
+
+
+
+
+
+        /* test('clicks New button', async () => {
+            const {rerender} = render(<App />);
+    
+            //sets up for the final test
+             var mhm = await screen.findByText('New');
+            /*act(() => {
+                userEvent.click(mhm);
+            });
+    
+            await act(async () => {
+                userEvent.click(mhm);
+            });
+            
+            rerender(<App />)
+    
+            /* await waitFor(() => {
+                //act(() => {
+                //    sleep(3000);
+                //});
+        
+                //rerender(<App />)
+                
+                //expect(await screen.findByText('New document')).toBeInTheDocument();
+                //await (waitFor(() => screen.getByText('New document'),{timeout:3000}));
+                expect(screen.getByText('New document')).toBeInTheDocument();
+            })
+    
+            await (waitFor(() => expect(screen.getByText('New document')).toBeInTheDocument(),{timeout:3000}));
+    
+            /* expect(await screen.findByText('New document')).toBeInTheDocument();
+            await (waitFor(() => screen.getByText('New document'),{timeout:3000}));
+        }); */
