@@ -1,10 +1,19 @@
 //GET DATABASE DOCS
 async function fetchData() {
+    const res = await fetch("https://jsramverk-editor-joku17.azurewebsites.net/list");
+    const data = await res.json();
+
+    return data;
+};
+
+
+
+/* async function fetchData() {
     return fetch("https://jsramverk-editor-joku17.azurewebsites.net/list")
     .then(res => {
         return res.json()
     })
-};
+}; */
 
 
 //GET DATABASE DOCS

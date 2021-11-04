@@ -1,11 +1,13 @@
 import React from "react";
 
 function ListItem(props) {
-    return (<li
-                onClick={() => props.onClick(props._id, props.name, props.html)}
-            >
-                {props.name}
-            </li>);
+    return (
+        <li
+            onClick={() => props.onClick(props._id, props.name, props.html)}
+        >
+            {props.name}
+        </li>)
+    ;
 }
 
 export default function Ul(props) {

@@ -18,8 +18,10 @@
 }
 
 #diagnostics {
-  font-size: 1px;
-  color: #282c34;
+  /* font-size: 1px;
+  color: #282c34; */
+  font-size: 14px;
+  color: red;
 }
 
 #head, #listdiv {

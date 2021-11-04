@@ -487,3 +487,35 @@ import userEvent from '@testing-library/user-event'; */
             /* expect(await screen.findByText('New document')).toBeInTheDocument();
             await (waitFor(() => screen.getByText('New document'),{timeout:3000}));
         }); */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //socket
+
+
+                        //console.log("active state: ", active);
+                //console.log("event.target.value: ", event.target.value);
+            //activeMirror =  { ...active };
+            // activeMirror.html = event.target.value;
+            //setActive({_id: active._id, name: active.name, html: event.target.value});
+            //activeMirror =  { ...active };
+                //console.log("activeMirror: ", active);
+            // setActive( activeMirror );
+                //console.log("active state after setActive: ", active);
+            // socket.emit('docBodyUpdate', {_id: active._id, name: active.name, html: event.target.value});
+            //console.log(val.value);
+            //element.editor
+            //socket.emit('docBodyUpdate', active);
+            //event.target.value = "";
