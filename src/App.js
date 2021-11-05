@@ -24,16 +24,37 @@ import { socket } from "./functions/socket";
 export default function App(props) {
     //data = unmodified data from db
     const [data, setData] = useState([]);
-    // const [activeId, setActiveId] = useState("");
-    // const [activeName, setActiveName] = useState("");
-    // const [activeHTML, setActiveHTML] = useState("");
-    const [active, setActive] = useState(
-        {
-            _id: "default id",
-            name: "",
-            html: "default html"
-        }
-    );
+    const [activeId, setActiveId] = useState("default id");
+    const [activeName, setActiveName] = useState("");
+    const [activeHTML, setActiveHTML] = useState("");
+    const [listen, setListen] = useState(false);
+    
+    // const [active, setActive] = useState(
+    //     {
+    //         _id: activeId,
+    //         name: activeName,
+    //         html: activeHTML
+    //     }
+    // );
+
+    // useEffect(() => {
+    //     setActive(
+    //         {
+    //             _id: activeId,
+    //             name: activeName,
+    //             html: activeHTML
+    //         }
+    //     );
+    // }, [activeId, activeName, activeHTML]);
+    
+
+    // const [active, setActive] = useState(
+    //     {
+    //         _id: "default id",
+    //         name: "",
+    //         html: ""
+    //     }
+    // );
 
     //for experimentation
     // function sleep(ms) {
@@ -51,59 +72,106 @@ export default function App(props) {
     }, []);
 
 
-    // let room;
-
-    //input.io
+//input.io
     useEffect(() => {
-        var element = document.querySelector("trix-editor");
+        socket.on('connect', function() {
+            // socket.emit("activeDoc", activeId);
+            socket.emit("activeDoc", "default id");
+        });
+    }, []);
+
+
+
+    useEffect(() => {
+        var elementRec = document.querySelector("trix-editor");
         //var val = document.getElementById("trix-editor");
 
-        // let activeMirror = {
-        //     _id: active._id,
-        //     name: active.name,
-        //     html: active.html
-        // };
-
-        socket.on('connect', function() {
-            // socket.emit("activeDoc", activeMirror._id);
-            socket.emit("activeDoc", active._id);
-            //room = active._id;
-        });
-
         socket.on('docBodyUpdate', function (data) {
-            console.log("data: ", data._id);
-            console.log("active: ", active._id);
-            if (data._id === active._id) {
-                element.editor.setSelectedRange([0, 999999999999999]);
-                element.editor.deleteInDirection("forward");
-                element.editor.insertHTML(data.html);  // is a Trix.Editor instance
-
-                //setActive( { _id: data._id, name: data.name, html: data.html } );
+            console.log("data._id: ", data._id);
+            console.log("activeId: ", activeId);
+            console.log("received html: ", data.html);
+            console.log("received name: ", data.name);
+            if (data._id === activeId) {
+                // setActiveId(data._id);
+                setActiveName(data.name);
+                // setActiveHTML(data.html);
+                elementRec.editor.setSelectedRange([0, 999999999999999]);
+                elementRec.editor.deleteInDirection("forward");
+                elementRec.editor.insertHTML(data.html);  // is a Trix.Editor instance
             }
         });
 
         return () => {
             console.log('useEffect cleanup 1');
+            socket.off();
         };
-    });
+    }, [activeId]);
+
+    // useEffect(() => {
+    //     var element = document.querySelector("trix-editor");
+    //     element.editor.setSelectedRange([0, 999999999999999]);
+    //     element.editor.deleteInDirection("forward");
+    //     element.editor.insertHTML(activeHTML);  // is a Trix.Editor instance
+    // }, [activeHTML]);
 
 
-
+    //editor
     useEffect(() => {
-        var element = document.querySelector("trix-editor");
+        // if (listen) {
+        //     return;
+        // }
+
+        function handleKeyUp(event) {
+            console.log("sending html:", val.value);
+            console.log("sending _id:", activeId);
+            socket.emit('docBodyUpdate', {_id: activeId, name: texta.value, html: val.value});
+            setListen(true);
+        }
+
+        var elementKey = document.querySelector("trix-editor");
+
+        var val = document.getElementById("trix-editor");
+        var texta = document.getElementById("texta");
+
+        elementKey.addEventListener("keyup", handleKeyUp);
+
+        return () => elementKey.removeEventListener("keyup", handleKeyUp);
+
+        // elementKey.addEventListener("keyup", function (event) {
+        //     console.log("sending html:", val.value);
+        //     console.log("sending _id:", activeId);
+        //     socket.emit('docBodyUpdate', {_id: activeId, name: texta.value, html: val.value});
+        // });
+    
+        // return () => {
+        //     console.log('useEffect cleanup 2');
+        //     elementKey.addEventListener("keyup", function (event) {
+        //         console.log("sending html:", val.value);
+        //         console.log("sending _id:", activeId);
+        //         //socket.emit('docBodyUpdate', {_id: activeId, name: texta.value, html: val.value});
+        //     });
+        // };
+    }, [activeId, listen]);
+
+
+    //activedoc
+    useEffect(() => {
+        var texta = document.getElementById("texta");
+        //var element = document.querySelector("trix-editor");
         var val = document.getElementById("trix-editor");
 
-        element.addEventListener("keyup", function (event) {
-            socket.emit('docBodyUpdate', {_id: active._id, name: active.name, html: val.value});
+        texta.addEventListener("keyup", function (event) {
+            console.log("sending name:", texta.value);
+            socket.emit('docBodyUpdate', {_id: activeId, name: texta.value, html: val.value});
         });
     
         return () => {
-            console.log('useEffect cleanup 2');
-            element.removeEventListener("keyup", function (event) {
-                socket.emit('docBodyUpdate', {_id: active._id, name: active.name, html: val.value});
+            console.log('useEffect cleanup 3');
+            texta.removeEventListener("keyup", function (event) {
+                socket.emit('docBodyUpdate', {_id: activeId, name: texta.value, html: val.value});
             });
         };
-    });
+    }, [activeId]);
     
 
 
@@ -112,57 +180,42 @@ export default function App(props) {
     function handleChange(event) {
         // setActiveHTML(newHtml); // OR custom on change listener.
         // setActive({...active, html: event.target.value}); // OR custom on change listener.
-        //setActive({_id: active._id, name: active.name, html: event.target.value});
+        // setActive({...active, html: event.target.value});
+        setActiveHTML(event.target.value);
     }
 
     //handle active document text input change
     function inpChange(event) {
         // setActiveName(event.target.value);
-        setActive({...active, name: event.target.value});
+        // setActive({...active, name: event.target.value});
+        setActiveName(event.target.value);
     }
 
-    //input keyup
-    // useEffect(() => {
-    //     var tr = document.querySelector("trix-editor");
-    //     if (tr != null) {
-    //         tr.addEventListener("keyup", function (event) {
-    //             console.log(tr.value);
-    //         });
-    //     };
-    // }, []);
 
-
-
-
-/* if (event.code === "Enter") {
-            socket.emit('chat message', event.target.value);
-            event.target.value = "";
-        } */
-//console.log(tr.value);
 
 //button click functions
     //handle document link clicked
-    async function liClicked(_id, name, html) {
-        console.log(_id, " ", name, html);
+    function liClicked(_id, name, html) {
+        console.log("liClicked:", _id, " ", name, html);
 
-        var element = document.querySelector("trix-editor");
-        element.editor.setSelectedRange([0, 999999999999999]);
-        element.editor.deleteInDirection("forward");
-        element.editor.insertHTML(html);  // is a Trix.Editor instance
+        var elementLi = document.querySelector("trix-editor");
+        elementLi.editor.setSelectedRange([0, 999999999999999]);
+        elementLi.editor.deleteInDirection("forward");
+        elementLi.editor.insertHTML(html);  // is a Trix.Editor instance
 
-        await setActive( { _id: _id, name: name, html: html } );
+        // setActive( { _id: _id, name: name, html: html } );
 
         socket.emit("activeDoc", _id);
 
-        // setActiveId(_id); // OR custom on change listener. */
-        // setActiveName(name);
-        // setActiveHTML(html);
+        setActiveId(_id);
+        setActiveName(name);
+        setActiveHTML(html);
     }
 
     //handle save button clicked
     async function saveButtonClicked() {
-        // await update(activeId, activeName, activeHTML);
-        await update(active._id, active.name, active.html);
+        await update(activeId, activeName, activeHTML);
+        // await update(active._id, active.name, active.html);
         fetchedData();
     }
 
@@ -175,10 +228,10 @@ export default function App(props) {
 
     //handle new button clicked
     async function newButtonClicked() {
-        var element = document.querySelector("trix-editor");
-        element.editor.setSelectedRange([0, 999999999999999]);
-        element.editor.deleteInDirection("forward");
-        element.editor.insertHTML("New document created, select it in the list above!");
+        var elementNew = document.querySelector("trix-editor");
+        elementNew.editor.setSelectedRange([0, 999999999999999]);
+        elementNew.editor.deleteInDirection("forward");
+        elementNew.editor.insertHTML("New document created, select it in the list above!");
 
         await createNew();
         fetchedData();
@@ -204,7 +257,7 @@ export default function App(props) {
                                 onClick={saveButtonClicked}
                                 className={"save"}
                                 // disabled={!activeId}
-                                disabled={!active.name}
+                                disabled={!activeName}
                             />
                             <ResetButton
                                 onClick={resetButtonClicked}
@@ -215,7 +268,7 @@ export default function App(props) {
                                 className="active"
                                 name="active"
                                 // value={activeName}
-                                value={active.name}
+                                value={activeName}
                                 onChange={inpChange}
                             >
                             </MyInput>
@@ -235,31 +288,30 @@ export default function App(props) {
                     placeholder="Input your text here!"
                     onChange={handleChange}
                     id="trix-editor"
-                    // defaultValue=""
+                    defaultValue={activeHTML}
                 />
-
-                {/* <chat id="chat" /> */}
-                {/* <div id="chat" name="chat">
-                    <h2>Messages:</h2>
-                    <div id="all-messages" className="all-messages"></div>
-
-                    <p><strong>Write new message:</strong></p>
-                    <input id="new-message" className="new-message"/>
-                </div> */}
 
                 {/* writes out states */}
                 <div id="diagnostics">
                     <p className="activeName state">
                         name: &nbsp;
-                        {active.name}
+                        {/* {active.name} */}
+                        {activeName}
                     </p>
                     <p className="activeId state">
                         id: &nbsp;
-                        {active._id}
+                        {/* {active._id} */}
+                        {activeId}
                     </p>
                     <p className="activeHTML state">
                         html: &nbsp;
-                        {active.html}
+                        {/* {active.html} */}
+                        {activeHTML}
+                    </p>
+                    <p className="listen state">
+                        listen: &nbsp;
+                        {/* {active.html} */}
+                        {listen}
                     </p>
                 </div>
 

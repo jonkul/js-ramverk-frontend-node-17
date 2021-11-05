@@ -18,10 +18,10 @@
 }
 
 #diagnostics {
-  /* font-size: 1px;
-  color: #282c34; */
-  font-size: 14px;
-  color: red;
+  font-size: 1px;
+  color: #282c34;
+  /* font-size: 1px; */
+  /* color: red; */
 }
 
 #head, #listdiv {
@@ -128,6 +128,7 @@ ul {
 
 
 @charset "UTF-8";
+
 /*
 Trix 1.3.1
 Copyright © 2020 Basecamp, LLC

@@ -5,6 +5,7 @@
 import io from "socket.io-client";
 // import { SOCKET_URL } from "config";
 
-const SOCKET_URL = "http://localhost:1337";
+// const SOCKET_URL = "http://localhost:1337";
+const SOCKET_URL = "https://jsramverk-editor-joku17.azurewebsites.net";
 
 export const socket = io(SOCKET_URL);
